@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Manager;
 
 use App\DTO\DTO;
-use App\DTO\EntityDTO;
 use App\DTO\IEntityTypeDTO;
-use App\Extension\PDO;
+use \PDO as PDO;
 use App\Helper\Helper;
 use App\Helper\StringHelper;
 use App\Manager\IManager;
 use Exception;
-use Nette\Utils\ArrayHash;
 use PDOException;
 use PDOStatement;
 use ReflectionClass;
@@ -352,7 +350,11 @@ class MysqlManager implements IManager
         $reflection = self::getReflection($className);
         $public = $reflection->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach ($public as $property) {
-            $aSql['cols'][] = $className::getTableName() . '.' . $property->name . ' as _' . $className::getTableName() . '__' . $property->name;
+            $aSql['cols'][] = $className::getTableName()
+                . '.'
+                . $property->name
+                . ' as _' . $className::getTableName()
+                . '__' . $property->name;
         }
         $protected = $reflection->getProperties(ReflectionProperty::IS_PROTECTED);
         foreach ($protected as $property) {
@@ -369,11 +371,20 @@ class MysqlManager implements IManager
                     if ($subReflection->implementsInterface(IEntityTypeDTO::class)) {
                         $join['where'] = [
                             [$temp['table'] . '.object_type = "%s"', [$aSql['table']]],
-                            $temp['table'] . '.object_id = ' . $aSql['table'] . '.' . $className::getTableMainIdentifier()
+                            $temp['table']
+                                . '.object_id = '
+                                . $aSql['table']
+                                . '.'
+                                . $className::getTableMainIdentifier()
                         ];
                     } else {
                         $join['where'] = [
-                            $aSql['table'] . '.' . $subClassName::getTableMainIdentifier() . ' = ' .  $temp['table'] . '.' . $subClassName::getTableMainIdentifier()
+                            $aSql['table']
+                                . '.'
+                                . $subClassName::getTableMainIdentifier()
+                                . ' = '
+                                .  $temp['table']
+                                . '.' . $subClassName::getTableMainIdentifier()
                         ];
                     }
                     $aSql['join'][] = $join;
@@ -383,8 +394,10 @@ class MysqlManager implements IManager
         return $aSql;
     }
 
-    public static function getClosestClassNameByProperty(string $protectedPropertyName, string $originClassName): ?string
-    {
+    public static function getClosestClassNameByProperty(
+        string $protectedPropertyName,
+        string $originClassName
+    ): ?string {
         $tries = [
             rtrim($originClassName, 'DTO'),
             rtrim($originClassName, StringHelper::getLastWord($originClassName, '\\')),

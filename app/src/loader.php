@@ -2,7 +2,7 @@
 
 use Symfony\Component\Yaml\Yaml;
 
-require_once(_DIR_VENDOR . 'autoload.php');
+require_once _DIR_VENDOR . 'autoload.php';
 require_once  __DIR__ . DIRECTORY_SEPARATOR . 'missing.php';
 
 /**
@@ -10,6 +10,7 @@ require_once  __DIR__ . DIRECTORY_SEPARATOR . 'missing.php';
  * definition => constants, but it's better use enf or class const for exact use
  * config => database config, etc
  */
+$config = [];
 foreach (['definition', 'config'] as $type) {
     $extension = 'yml';
     $filepath = _DIR_CONFIG . join('.', [$type, $extension]);

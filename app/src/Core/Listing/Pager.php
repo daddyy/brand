@@ -18,12 +18,12 @@ class Pager
         $this->page = $params['page'] ?? self::PAGE;
     }
 
-    function getLimit(): int
+    public function getLimit(): int
     {
         return $this->limit;
     }
 
-    function getPage(): int
+    public function getPage(): int
     {
         return $this->page;
     }
