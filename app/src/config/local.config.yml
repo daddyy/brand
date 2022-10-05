@@ -1,0 +1,3 @@
+app:
+  host: brand.daddyy.local
+  database: mysql://daddyy:asdf@localhost/daddyy.test_10

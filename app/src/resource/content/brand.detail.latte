@@ -1,0 +1,26 @@
+{* 
+* @param $control BrandControl
+*}
+<table class="striped highlight">
+    <thead>
+        <tr>
+            <th>$.brand_id</th>
+            <th>$.create_date / $.modify_date</th>
+            <th>$.content.title</th>
+            <th>$.content.url</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{$detail->brand_id}</td>
+            <td>{$detail->create_date|date:'d.m.Y'} / {$detail->modify_date|date:'d.m.Y'}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                {$detail->getForm('upsert')->render()}
+            </td>
+        </tr>
+    </tbody>
+</table>
