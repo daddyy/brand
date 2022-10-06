@@ -11,6 +11,7 @@ use App\DTO\LangDTO;
 use App\DTO\RouteDTO;
 use App\Extension\PDO;
 use App\Manager\MysqlManager;
+use Exception as DataException;
 
 /**
  * @todo this class is more as engine or core, create core class separate
@@ -64,6 +65,10 @@ final class Container
         return $control;
     }
 
+    /**
+     * @todo create RouteControl
+     * @todo create redirects if the route is older or if is system and the route exists
+     */
     private function createRoute(DomainDTO $domain, string $uriPath): RouteDTO
     {
         $aQuery = [
@@ -71,9 +76,12 @@ final class Container
             'cols' => ['*'],
             'where' => [
                 ['route.path = "%s"', [$uriPath]],
-                ['route.domain_id = %s', [$domain->domain_id]],
-                ['route.lang_id = %s', [$domain->lang_id]],
+                ['(route.domain_id = %s OR route.domain_id IS NULL)', [$domain->domain_id]],
+                ['(route.lang_id = %s OR route.lang_id IS NULL)', [$domain->lang_id]],
             ],
+            'order' => [
+                'route.domain_id, route.lang_id'
+            ]
         ];
         $row = $this->manager->query($this->manager->prepareQuery($aQuery), 'row');
         if (empty($row)) {
@@ -90,7 +98,9 @@ final class Container
             ];
 
             $row = $this->manager->query($this->manager->prepareQuery($aQuery), 'row');
-
+            if ($object_type == false) {
+                throw new DataException("Misssing route for the uri path");
+            }
             if (empty($row)) {
                 $row = [
                     'domain_id' => $domain->domain_id,
@@ -112,35 +122,20 @@ final class Container
      */
     private function createDomain(string $domainName): DomainDTO
     {
-        $domain = new DomainDTO($this->manager->query(
-            $this->manager->prepareQuery(
-                [
-                    'table' => 'domain',
-                    'cols' => ['*'],
-                    'where' => [['domain.name = "%s"', [$domainName]]]
-                ]
+        $row = $this->manager->query(
+            $this->manager->prepareQueryFromDto(
+                DomainDTO::class,
+                'select',
+                ['where' => [['domain.name = "%s"', [$domainName]]]]
             ),
             'row'
-        ));
-        $domain->setLang($this->createLang($domain->lang_id));
+        );
+        if (empty($row)) {
+            throw new DataException("Missing lang or domain entity please create it");
+        }
+        $row = EntityControl::prepareValuesFromAutoRow($row, 'domain');
+        $domain = new DomainDTO($row);
         return $domain;
-    }
-
-    /**
-     * @deprecated see createDomain @todo
-     */
-    private function createLang(int $langId): LangDTO
-    {
-        return new LangDTO($this->manager->query(
-            $this->manager->prepareQuery(
-                [
-                    'table' => 'lang',
-                    'cols' => ['*'],
-                    'where' => ['lang_id = "' . $langId . '"']
-                ]
-            ),
-            'row'
-        ));
     }
 
     /**
