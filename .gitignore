@@ -1,5 +1,8 @@
+tmp/
 vendor/
 cache/
 logs/
 task.md
 app/config/*.yml
+www/data/*
+transport/
