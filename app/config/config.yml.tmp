@@ -1,2 +1,0 @@
-app:
-  database: "sqlsrv://username:password@hostname/database"

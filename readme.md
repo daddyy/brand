@@ -3,9 +3,9 @@
 ## install
 - mysql + php.8.1 + composer libs
 ### DIR
-1. `$ mkdir ./cache ./log`
+1. `$ mkdir ./cache ./logs`
 2. `$ chmod 755 .`
-3. `$ chmod 775 ./cache ./log`
+3. `$ chmod 775 ./cache ./logs`
 4. create / copy config file
     - production: `$ cp ./app/config/config.yml.tmp ./app/config/config.yml`
     - development: `$ cp ./app/config/config.yml.tmp ./app/config/devel.config.yml`
