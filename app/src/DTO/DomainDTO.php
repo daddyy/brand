@@ -12,6 +12,7 @@ class DomainDTO extends DTO
     protected LangDTO $lang;
     public int $domain_id;
     public int $lang_id;
+    public string $name;
 
     public function __construct(?array $row)
     {
