@@ -11,6 +11,7 @@ if (version_compare(PHP_VERSION, '8.1') <= 0) {
     $alerts['php'] = 'The version of php has to be greater than 8.1';
 }
 $filenames = [
+    _DIR_TMP => ['is_dir', 'is_writeable'],
     _DIR_LOGS => ['is_dir', 'is_writeable'],
     _DIR_CACHE => ['is_dir', 'is_writeable'],
     _DIR_CONFIG => ['is_dir', 'is_writeable'],
@@ -23,3 +24,12 @@ foreach ($filenames as $dir => $callbacks) {
         }
     }
 }
+
+if ($alerts) {
+    print_r("\n\n========== start ERRORS ===========\n");
+    print_r($alerts);
+    print_r("==========  end ERRORS  ===========\n");
+} else {
+    print_r("\n\n========== OK ===========\n");
+}
+die();

@@ -2,6 +2,10 @@
 
 ## install
 - mysql + php.8.1 + composer libs
+- see the conf.d/ and setup the http service and php
+
+- you can run the install ./build/install
+
 ### DIR
 1. `$ mkdir ./cache ./logs`
 2. `$ chmod 755 .`
@@ -10,10 +14,7 @@
     - production: `$ cp ./app/config/config.yml.tmp ./app/config/config.yml`
     - development: `$ cp ./app/config/config.yml.tmp ./app/config/devel.config.yml`
     - local: `$ cp ./app/config/config.yml.tmp ./app/config/local.config.yml`
-5. `$ composer install && composer update`
-### server service
-- see the conf.d/ and setup the http service and php
-
+5. `$ composer update`
 ### first run
 - `app/src/install/check.php` => put (uncomment) it the require to the `run.php` after the init object config
 - fill the DB with example data

@@ -1,0 +1,12 @@
+cd ..
+chmod 775 . && 
+mkdir tmp logs cache && chmod 775 logs cache tmp
+cp ./app/config/config.yml.tmp ./app/config/config.yml
+composer update
+php ./www/index.php -fcheck
+php ./www/index.php -fdb
+
+echo 
+echo ================= summary =================
+echo Import the SQL to your Mysql server and than setup the credentials in config file app/config/config.yml
+echo ================= summary =================

@@ -1,0 +1,3 @@
+cd ..
+composer update
+sass build/materialize-src/sass/materialize.scss www/css/materialize.css

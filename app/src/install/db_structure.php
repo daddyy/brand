@@ -128,13 +128,10 @@ try {
     print_r($th->getMessage());
     die();
 }
-echo "<pre>\n";
-echo "============================ start ERROR ======================\n";
-echo (join("\n", $errors));
-echo "\n============================  end ERROR  ======================\n\n";
-
+$toSave = join("\n\n", $sql);
+$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . date('Y-m-d_h-i-s') . '_structure' . '.sql';
+file_put_contents($tmpFile, $toSave);
 echo "\n\n============================ start SQL ========================\n";
-echo (join("\n\n", $sql));
+echo ">>> db structure sql file was saved as: " . $tmpFile;
 echo "\n============================  end SQL  ========================\n";
-echo "</pre>";
 die();
