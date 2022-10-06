@@ -254,7 +254,7 @@ class MysqlManager implements IManager
         return $result;
     }
 
-    public function getLasthSth(): ?PDOStatement
+    public function getLastSth(): ?PDOStatement
     {
         return $this->lastSth;
     }

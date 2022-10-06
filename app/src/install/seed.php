@@ -120,7 +120,7 @@ try {
             join(",\n", array_filter($sqlColumns)),
             $table['indexes'] ? (',' . join(",\n", $table['indexes'])) : null,
             ')',
-            $engine
+            $engine . ';'
         ];
         $sql[$table['table']] = join("\n", $sqlTable);
     }
