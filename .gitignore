@@ -2,4 +2,4 @@ vendor/
 cache/
 logs/
 task.md
-!config/*.tmp
+app/config/*.yml
