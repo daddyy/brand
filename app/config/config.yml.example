@@ -1,0 +1,3 @@
+app:
+  host: daddyy.local
+  database: "sqlsrv://username:password@hostname/database"
