@@ -341,19 +341,21 @@ class MysqlManager implements IManager
 
     public static function prepareSelectFromDto(string $className): ?array
     {
-        if (!$className::getTableName()) {
+        $mainIdentifier = $className::getTableMainIdentifier();
+        $tableName = $className::getTableName();
+        if (!$mainIdentifier || !$tableName) {
             return null;
         }
-        $aSql['table'] = $className::getTableName();
+        $aSql['table'] = $tableName;
         $aSql['cols'] = [];
         $aSql['join'] = [];
         $reflection = self::getReflection($className);
         $public = $reflection->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach ($public as $property) {
-            $aSql['cols'][] = $className::getTableName()
+            $aSql['cols'][] = $tableName
                 . '.'
                 . $property->name
-                . ' as _' . $className::getTableName()
+                . ' as _' . $tableName
                 . '__' . $property->name;
         }
         $protected = $reflection->getProperties(ReflectionProperty::IS_PROTECTED);
@@ -375,16 +377,17 @@ class MysqlManager implements IManager
                                 . '.object_id = '
                                 . $aSql['table']
                                 . '.'
-                                . $className::getTableMainIdentifier()
+                                . $mainIdentifier
                         ];
                     } else {
+                        $subMainIdentifier = $subClassName::getTableMainIdentifier();
                         $join['where'] = [
                             $aSql['table']
                                 . '.'
-                                . $subClassName::getTableMainIdentifier()
+                                . $subMainIdentifier
                                 . ' = '
                                 .  $temp['table']
-                                . '.' . $subClassName::getTableMainIdentifier()
+                                . '.' . $subMainIdentifier
                         ];
                     }
                     $aSql['join'][] = $join;

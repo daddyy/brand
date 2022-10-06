@@ -107,7 +107,8 @@ final class Container
 
     /**
      * @todo input for create has to be hostname from _config
-     * @todo we know the name of column and the name of related table (property) we can create the auto sql query with underscode annotation __$table__$columnName
+     * @todo we know the name of column and the name of related table (property)
+     *       we can create the auto sql query with underscode annotation __$table__$columnName
      */
     private function createDomain(string $domainName): DomainDTO
     {
@@ -169,6 +170,6 @@ final class Container
             'route' => $this->route,
         ];
         $assigns = array_merge($assigns, $control->getAssigns());
-        $templateEngine->render(_DIR_APP . 'resource' . DIRECTORY_SEPARATOR . 'index.' . $suffix, $assigns);
+        $templateEngine->render(_DIR_APP_CORE . 'resource' . DIRECTORY_SEPARATOR . 'index.' . $suffix, $assigns);
     }
 }

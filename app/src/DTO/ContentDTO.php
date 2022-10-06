@@ -17,11 +17,6 @@ class ContentDTO extends DTO implements IEntityTypeDTO, IContentDTO
     public string $description = '';
     public string $text = '';
 
-    public static function getTableName(): ?string
-    {
-        return 'content';
-    }
-
     public static function getTableUniqueIdentifiers(): array
     {
         return ['lang_id', 'object_type', 'object_id'];

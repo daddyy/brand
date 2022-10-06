@@ -8,8 +8,8 @@ use App\Helper\Helper;
 
 class RouteDTO extends DTO implements IEntityTypeDTO
 {
-    protected ?DomainDTO $domain = null;
-    protected ?LangDTO $lang = null;
+    private DomainDTO $domain;
+    private LangDTO $lang;
     public int $route_id;
     public int $lang_id;
     public int $domain_id;
@@ -47,11 +47,6 @@ class RouteDTO extends DTO implements IEntityTypeDTO
     public function getAbsPath()
     {
         return '/' . ltrim($this->path, '/');
-    }
-
-    public static function getTableName(): ?string
-    {
-        return 'route';
     }
 
     public static function getTableUniqueIdentifiers(): array

@@ -12,13 +12,13 @@ final class Config
     const DEVELOPMENT_MODE = 'devel';
     public string $appMode;
     private string $domain;
-    private string $uriPath;
+    private string $uriPath = '';
     private array $database;
     public function __construct(array $config)
     {
         $this->setDatabase(ArrayHelper::searchInArrayByIndexes($config, ['config', 'app', 'database']));
         $this->setAppMode(ArrayHelper::searchInArrayByIndexes($config, ['config', 'mode']));
-        $this->setDomain(ArrayHelper::searchInArrayByIndexes($config, ['config', 'app', 'domain']));
+        $this->setDomain(ArrayHelper::searchInArrayByIndexes($config, ['config', 'app', 'host']));
         $this->setUriPath(ArrayHelper::searchInArrayByIndexes($config, ['config', 'app', 'path']));
     }
 
@@ -83,7 +83,11 @@ final class Config
 
     public function setUriPath(?string $uriPath): self
     {
-        $this->uriPath = $uriPath ?? $_SERVER['REQUEST_URI'];
+        if ($uriPath) {
+            $this->uriPath = $uriPath;
+        } else {
+            $this->uriPath = ArrayHelper::searchInArrayByIndexes($_SERVER, ['REQUEST_URI']) ?? '';
+        }
         return $this;
     }
 

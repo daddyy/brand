@@ -8,7 +8,7 @@ use Exception;
 
 class DomainDTO extends DTO
 {
-    protected RouteDTO $route;
+    private RouteDTO $route;
     protected LangDTO $lang;
     public int $domain_id;
     public int $lang_id;

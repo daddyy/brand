@@ -14,11 +14,6 @@ class BrandDTO extends EntityDTO
 {
     public int $brand_id;
 
-    public static function getTableName(): ?string
-    {
-        return BrandControl::getTableName();
-    }
-
     public static function getTableMainIdentifier(): ?string
     {
         return BrandControl::getTableMainIdentifier();

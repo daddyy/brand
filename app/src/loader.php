@@ -6,7 +6,7 @@ require_once _DIR_VENDOR . 'autoload.php';
 require_once  __DIR__ . DIRECTORY_SEPARATOR . 'missing.php';
 
 /**
- * mandatory order (defintion, config), then production, devel, local
+ * mandatory order production, devel, local
  * definition => constants, but it's better use enf or class const for exact use
  * config => database config, etc
  */
@@ -41,7 +41,7 @@ function autoload($className)
     $namespaceSeparator   = '\\';
     $classExtensionSuffix = '.php';
     $paths                = array(
-        'core' => _DIR_APP
+        'core' => _DIR_APP_CORE
     );
     $temp = explode('\\', $className, 2);
     $target = str_replace($namespaceSeparator, DIRECTORY_SEPARATOR, end($temp)) . $classExtensionSuffix;
@@ -56,6 +56,7 @@ function autoload($className)
         require_once $result;
     }
 }
+
 
 if (!function_exists('spl_autoload_register')) {
     throw new \Exception('spl_autoload does not exist in this PHP installation');

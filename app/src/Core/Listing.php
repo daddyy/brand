@@ -85,16 +85,17 @@ class Listing
 
     protected function createOrder(?array $params = []): Order
     {
+        $table = $this->control::getTableName();
         if ($params) {
             foreach ($params as $key => $value) {
                 $keys = explode('.', $key);
                 if (count($keys) == 1) {
                     unset($params[$key]);
-                    $params[$this->control::getTableName() . '.' . $key] = $value;
+                    $params[$table . '.' . $key] = $value;
                 }
             }
         }
-        return new Order($params ?? [$this->control::getTableName() . '.' . $this->control::getTableMainIdentifier() => 0]);
+        return new Order($params ?? [$table . '.' . $this->control::getTableMainIdentifier() => 0]);
     }
 
     protected function createFilter(?array $params = []): Filter

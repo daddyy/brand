@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e002666db091dcb2ab7e7a26290e01d9",
+    "content-hash": "bfa213963b75235aa8ee3d2c6abea423",
     "packages": [
         {
             "name": "aura/sql",
@@ -129,6 +129,104 @@
                 }
             ],
             "time": "2022-02-21T13:15:14+00:00"
+        },
+        {
+            "name": "jasny/php-functions",
+            "version": "v3.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jasny/php-functions.git",
+                "reference": "2dac4273d80f7aadff8e027c8574d61c85a607ac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jasny/php-functions/zipball/2dac4273d80f7aadff8e027c8574d61c85a607ac",
+                "reference": "2dac4273d80f7aadff8e027c8574d61c85a607ac",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "jasny/php-code-quality": "^2.0",
+                "phpunit/phpunit": "^5.7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/array_functions.php",
+                    "src/case_functions.php",
+                    "src/string_functions.php",
+                    "src/server_functions.php",
+                    "src/type_functions.php",
+                    "src/file_functions.php",
+                    "src/func_functions.php",
+                    "src/object_functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arnold Daniels",
+                    "email": "arnold@jasny.net",
+                    "homepage": "http://www.jasny.net"
+                }
+            ],
+            "description": "A set of useful PHP functions",
+            "support": {
+                "issues": "https://github.com/jasny/php-functions/issues",
+                "source": "https://github.com/jasny/php-functions"
+            },
+            "time": "2018-11-26T11:24:27+00:00"
+        },
+        {
+            "name": "jasny/phpdoc-parser",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jasny/phpdoc-parser.git",
+                "reference": "d208ad271b07336a61787e97b95837c31d171bf0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jasny/phpdoc-parser/zipball/d208ad271b07336a61787e97b95837c31d171bf0",
+                "reference": "d208ad271b07336a61787e97b95837c31d171bf0",
+                "shasum": ""
+            },
+            "require": {
+                "jasny/php-functions": "^3.3",
+                "php": ">=7.4.0"
+            },
+            "require-dev": {
+                "jasny/php-code-quality": "~2.7.0",
+                "phpunit/phpunit": ">= 9.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jasny\\PhpdocParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arnold Daniels",
+                    "email": "arnold@jasny.net",
+                    "homepage": "http://www.jasny.net"
+                }
+            ],
+            "description": "Jasny skeleton library",
+            "support": {
+                "issues": "https://github.com/jasny/phpdoc-parser/issues",
+                "source": "https://github.com/jasny/phpdoc-parser"
+            },
+            "time": "2022-01-05T21:00:28+00:00"
         },
         {
             "name": "latte/latte",
