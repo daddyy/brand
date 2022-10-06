@@ -118,14 +118,16 @@ abstract class EntityControl implements IControl
     /**
      * @todo remove the hotfix wirt cnd '_id' use reflection
      */
-    public function prepareValuesFromAutoRow($row): array
+    public static function prepareValuesFromAutoRow($row, string $mainTable = null): array
     {
+        $mainTable = $mainTable ?? static::getTableName();
+        $mainIdentifier = $mainTable ? $mainTable . '_id' : static::getTableMainIdentifier();
         $tmpRow = [];
         foreach ($row as $property => $value) {
             $keys = explode('__', ltrim($property, '_'));
-            if (self::getTableName() == reset($keys)) {
-                if (end($keys) == self::getTableMainIdentifier()) {
-                    $tmpRow['entity_type'] = self::getTableName();
+            if ($mainTable == reset($keys)) {
+                if (end($keys) == $mainIdentifier) {
+                    $tmpRow['entity_type'] = $mainTable;
                     $tmpRow['entity_id'] = (int) $value;
                 }
                 if (substr($property, -3) == '_id') {
