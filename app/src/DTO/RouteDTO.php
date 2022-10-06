@@ -11,9 +11,9 @@ class RouteDTO extends DTO implements IEntityTypeDTO
     private DomainDTO $domain;
     private LangDTO $lang;
     public int $route_id;
-    public int $lang_id;
-    public int $domain_id;
-    public int $object_id;
+    public ?int $lang_id = null;
+    public ?int $domain_id = null;
+    public ?int $object_id = null;
     public string $object_type;
     public string $path;
 
