@@ -8,6 +8,7 @@ use ArrayAccess;
 use Nette\Forms\Form;
 use App\Helper\Helper;
 use App\Helper\ArrayHelper;
+use DateTime;
 
 abstract class EntityDTO extends DTO
 {
@@ -17,6 +18,7 @@ abstract class EntityDTO extends DTO
     private array $forms = [];
     private int $entity_id;
     private string $entity_type;
+    private DateTime $entity_modify_date;
     protected RouteDTO $route;
     protected ContentDTO $content;
     public bool $deleted;
@@ -115,6 +117,17 @@ abstract class EntityDTO extends DTO
     public function setEntityId(int $entity_id): self
     {
         $this->entity_id = $entity_id;
+        return $this;
+    }
+
+    public function getEntityModifyDate(): DateTime
+    {
+        return $this->entity_modify_date;
+    }
+
+    public function setEntityModifyDate(string $entity_modify_date): self
+    {
+        $this->entity_modify_date = $this->getDateTimePropValue($entity_modify_date);
         return $this;
     }
 }

@@ -3,7 +3,9 @@
         <tr>
             <th><a class="btn blue" href="{$listing->getUriByOrderColumn('brand_id')}">$.brand_id</a></th>
             <th><a class="btn blue" href="{$listing->getUriByOrderColumn('create_date')}">$.create_date</a></th>
+            <th>$.content.getId()</th>
             <th>$.content.title</th>
+            <th>$.route.getId()</th>
             <th>$.route.path</th>
             <th>actions</th>
         </tr>
@@ -11,8 +13,10 @@
     <tbody>
         <tr n:foreach="$listing->getItems() as $item">
             <td>{$item->brand_id}</td>
-            <td>{$item->create_date|date:'d.m.Y'} / {$item->modify_date|date:'d.m.Y'}</td>
+            <td>{$item->create_date|date:'d.m.Y H:i:s'} / {$item->modify_date|date:'d.m.Y H:i:s'} / {$item->getEntityModifyDate()|date:'d.m.Y H:i:s'}</td>
+            <td>{$item->getContent()->getId()}</td>
             <td>{$item->getContent()->title}</td>
+            <td>{$item->getRoute()->getId()}</td>
             <td>{$item->getRoute()->path}</td>
             <td>
                 {var $updateForm=$item->getForm('upsert')}
@@ -30,7 +34,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="5">
+            <td colspan="7">
             {var $pages=$listing->getPages()}
             <ul class="pagination right">
             {foreach $pages as $page}

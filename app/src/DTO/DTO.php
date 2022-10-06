@@ -41,7 +41,11 @@ abstract class DTO implements IDTO
 
     public function fill(array|ArrayAccess $row, ?DomainDTO $domain = null): self
     {
+        $latestModifyDate = [];
         foreach ($row as $property => $value) {
+            if (stripos($property, 'modify_date') !== false) {
+                $latestModifyDate[strtotime($value)] = $value;
+            }
             $setter = Helper::setter($property, $this::class);
             $subClass = self::getClosestClassNameByProperty($property, $this::class);
             if ($subClass) {
@@ -71,6 +75,9 @@ abstract class DTO implements IDTO
                 $this->{$property} = $value;
             }
         }
+        if ($latestModifyDate && $this instanceof EntityDTO) {
+            $this->setEntityModifyDate($latestModifyDate[max(array_keys($latestModifyDate))]);
+        }
         return $this;
     }
 
@@ -79,7 +86,7 @@ abstract class DTO implements IDTO
         return MysqlManager::getClosestClassNameByProperty($property, $originClass);
     }
 
-    private function getDateTimePropValue(string $date): DateTime
+    protected function getDateTimePropValue(string $date): DateTime
     {
         return new DateTime($date);
     }
