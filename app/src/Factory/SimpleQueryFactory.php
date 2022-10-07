@@ -6,6 +6,7 @@ use Exception;
 
 /**
  * @todo for each queryType create separeted builder {$driver}\Select extends CommonSelect etc.
+ * @todo assign values has to be prepared as statement
  */
 class SimpleQueryFactory
 {
