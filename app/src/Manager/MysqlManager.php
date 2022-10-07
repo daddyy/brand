@@ -34,6 +34,7 @@ class MysqlManager implements IManager
     private ?PDOStatement $lastSth;
     private PDO $pdo;
     public static array $reflections = [];
+    public static string $driver;
 
     public function __construct(PDO $pdo)
     {
@@ -42,6 +43,7 @@ class MysqlManager implements IManager
     public static function connect(array $params): self
     {
         $pdo = new PDO($params['dsn'], $params['user'], $params['pass'], $params['options'] ?? null);
+        self::$driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
         return new self($pdo);
     }
 
@@ -55,7 +57,7 @@ class MysqlManager implements IManager
      */
     public static function prepareQuery(array $array, string $statement = 'SELECT'): string
     {
-        return SimpleQueryFactory::createQuery($statement, $array);
+        return SimpleQueryFactory::createQuery($statement, $array, static::$driver);
     }
 
     /**

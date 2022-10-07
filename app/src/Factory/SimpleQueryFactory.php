@@ -11,28 +11,30 @@ use Exception;
 class SimpleQueryFactory
 {
     private static $_instance;
-    public string $driver = 'mysql';
 
-    public static function getInstance(): self
+    public function __construct(private string $driver)
     {
-        if (!isset(static::$_instance)) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
     }
 
-    public static function createQuery(string $typeQuery, array $array): string
+    public static function getInstance(string $driver): self
     {
-        $instance = self::getInstance();
+        if (!isset(static::$_instance[$driver])) {
+            self::$_instance[$driver] = new self($driver);
+        }
+        return self::$_instance[$driver];
+    }
+
+    public static function createQuery(string $typeQuery, array $array, string $driver): string
+    {
+        $instance = self::getInstance($driver);
         $aQuery = $instance->buildQuery($typeQuery, $array);
         $sQuery = $instance->buildQueryString($typeQuery, $aQuery);
         return $sQuery;
     }
 
-    public static function prepareQuery(string $typeQuery, array $array): array
+    public static function prepareQuery(string $typeQuery, array $array, string $driver): array
     {
-        $instance = self::getInstance();
-        $sQuery = $instance->createQuery($typeQuery, $array);
+        $sQuery = self::createQuery($typeQuery, $array, $driver);
         $result = [
             'queryString' => $sQuery,
         ];
