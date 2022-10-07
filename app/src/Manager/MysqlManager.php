@@ -6,6 +6,7 @@ namespace App\Manager;
 
 use App\DTO\DTO;
 use App\DTO\IEntityTypeDTO;
+use App\Factory\SimpleQueryFactory;
 use \PDO as PDO;
 use App\Helper\Helper;
 use App\Helper\StringHelper;
@@ -38,7 +39,6 @@ class MysqlManager implements IManager
     {
         $this->setPdo($pdo);
     }
-
     public static function connect(array $params): self
     {
         $pdo = new PDO($params['dsn'], $params['user'], $params['pass'], $params['options'] ?? null);
@@ -55,122 +55,7 @@ class MysqlManager implements IManager
      */
     public static function prepareQuery(array $array, string $statement = 'SELECT'): string
     {
-        $aSql = [];
-        $cols = empty($array['cols']) ? null : $array['cols'];
-        $table = empty($array['table']) ? null : $array['table'];
-        $where = self::createConditions($array['where'] ?? []);
-        $order = empty($array['order']) ? null : ('ORDER BY ' . implode(', ', $array['order']));
-        $group = empty($array['group']) ? null : ('GROUP BY ' . implode(', ', $array['group']));
-        $limit = self::createPageLimits($array['limit'] ?? 0, $array['page'] ?? null);
-        $type = empty($array['type']) ? null : $array['type'];
-        $joins = empty($array['join']) ? [] : $array['join'];
-        foreach ($joins as $key => $join) {
-            $join['type'] = ($join['type'] ? $join['type'] : '') . ' JOIN';
-            $joins[$key] = self::prepareQuery($join, 'JOIN');
-        }
-        $joins = implode(" \n", $joins);
-        switch (strtoupper($statement)) {
-            case 'JOIN':
-                $aSql = [
-                    $type,
-                    $table,
-                    'ON',
-                    $where,
-                ];
-                break;
-            case 'DELETE':
-                $aSql = [
-                    'DELETE',
-                    'FROM',
-                    $table,
-                    $joins,
-                    $where ? 'WHERE' : '',
-                    $where,
-                    $group,
-                    $order,
-                    $limit,
-                ];
-                break;
-            case 'SELECT':
-                $aSql = [
-                    'SELECT',
-                    implode(',', $cols),
-                    'FROM',
-                    $table,
-                    $joins,
-                    $where ? 'WHERE' : '',
-                    $where,
-                    $group,
-                    $order,
-                    $limit,
-                ];
-                break;
-            case 'UPDATE':
-                $aSql = [
-                    'UPDATE',
-                    $table,
-                    $joins,
-                    'SET',
-                    $cols = implode(', ', array_map(
-                        function ($v, $k) {
-                            return sprintf("%s=" . (is_int($v) ? '%s' : "'%s'"), $k, $v);
-                        },
-                        $cols,
-                        array_keys($cols)
-                    )),
-                    $where ? 'WHERE' : '',
-                    $where,
-                    $group,
-                    $order,
-                    $limit,
-                ];
-                break;
-            case 'INSERT':
-                $aSql = [
-                    'INSERT INTO',
-                    $table,
-                    '(' . implode(',', array_keys($cols)) . ')',
-                    'values',
-                    '(' . implode(',', array_map(function ($v) {
-                        return (is_int($v) ? $v : "'" . $v . "'");
-                    }, $cols)) . ')'
-                ];
-                break;
-            default:
-                throw new Exception('Statement type is not defined!');
-        }
-        $aSql = array_filter($aSql);
-        $result = implode(" \n", $aSql);
-        return $result;
-    }
-
-    public static function createPageLimits(?int $limit = null, ?int $page = null): ?string
-    {
-        if (is_null($page) && $limit) {
-            return 'LIMIT ' . $limit;
-        }
-        if ($limit && $page) {
-            return 'LIMIT ' . ($limit * ($page - 1)) . ', ' . $limit;
-        }
-        return '';
-    }
-
-    public static function createConditions(array $conditions, string $glue = 'AND'): ?string
-    {
-        $where = [];
-        foreach ($conditions as $key => $mixed) {
-            if (is_string($key) && (is_string($mixed) || is_numeric($mixed))) {
-                $where[] = $key . ' = ' . (is_int($mixed) ? ($mixed) : ('"' . $mixed . '"'));
-            } elseif (is_bool($mixed)) {
-                $where[] = $mixed ? "1 = 1" : "1 = 0";
-            } elseif (is_string($mixed)) {
-                $where[] = $mixed;
-            } elseif (!is_null($mixed)) {
-                $aReverse = array_reverse($mixed);
-                $where[] = vsprintf(reset($mixed), array_shift($aReverse));
-            }
-        }
-        return join(' ' . $glue . ' ', $where);
+        return SimpleQueryFactory::createQuery($statement, $array);
     }
 
     /**
@@ -348,7 +233,7 @@ class MysqlManager implements IManager
         }
         $aSql['table'] = $tableName;
         $aSql['cols'] = [];
-        $aSql['join'] = [];
+        $aSql['joins'] = [];
         $reflection = self::getReflection($className);
         $public = $reflection->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach ($public as $property) {
@@ -390,7 +275,7 @@ class MysqlManager implements IManager
                                 . '.' . $subMainIdentifier
                         ];
                     }
-                    $aSql['join'][] = $join;
+                    $aSql['joins'][] = $join;
                 }
             }
         }

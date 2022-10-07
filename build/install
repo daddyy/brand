@@ -1,3 +1,4 @@
+#!/bin/bash
 cd ..
 chmod 775 . && 
 mkdir tmp logs cache && chmod 775 logs cache tmp

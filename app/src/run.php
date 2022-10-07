@@ -23,6 +23,8 @@ if ($option == 'db') {
 
 Tracy\Debugger::$strictMode = true;
 Tracy\Debugger::enable(false, _DIR_LOGS);
+Tracy\Debugger::$maxLength = 500;
+Tracy\Debugger::$maxDepth = 10;
 $config = new App\Core\Config($config);
 /**
  * setup logger and tracy
