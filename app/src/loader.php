@@ -33,6 +33,7 @@ foreach (['definition', 'config'] as $type) {
 
 /**
  * load the classes from core and libreries
+ * @todo fix the directories structure and use composer
  */
 function autoload($className)
 {

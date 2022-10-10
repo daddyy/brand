@@ -38,7 +38,6 @@ class SimpleQueryFactory
         $result = [
             'queryString' => $sQuery,
         ];
-        dumpe($result);
         return $result;
     }
 

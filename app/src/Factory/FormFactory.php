@@ -8,11 +8,11 @@ use App\DTO\EntityDTO;
 use Exception;
 use Nette\Forms\Form;
 
-class FormFactory
+class FormFactory extends Form
 {
     public static function createForm(string $actionType, EntityDTO $entityDTO): Form
     {
-        $form = new Form($actionType . '_' . $entityDTO::getTableName() . '_' .  $entityDTO->getId());
+        $form = new self($actionType . '_' . $entityDTO::getTableName() . '_' .  $entityDTO->getId());
         $form->setAction($entityDTO->getRoute()->getAbsPath());
         $form->addHidden('_' . $entityDTO::getTableName() . '__' . $entityDTO::getTableMainIdentifier(), $entityDTO->getId());
 

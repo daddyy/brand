@@ -1,9 +1,9 @@
 <?php
 
 /**
- * very simple script for generete actual db structure
+ * simple script for generate actual db structure
  * @todo use the docblock and read the @db_props
- * @todo create it as an migration class
+ * @todo create as an migration class
  */
 
 $dbTables = $errors = [];
