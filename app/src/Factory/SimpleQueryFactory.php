@@ -61,7 +61,7 @@ class SimpleQueryFactory
     {
         $common = [
             'joins' => $this->buildJoins($array['joins'] ?? []),
-            'where' => $this->buildCondition($array['where'] ?? []),
+            'where' => self::buildConditions($array['where'] ?? []),
             'order' => $this->buildOrder($array['order'] ?? []),
             'group' => $this->buildGroup($array['group'] ?? []),
             'limit' => $this->buildPageLimits($array['limit'] ?? null, $array['page'] ?? null),
@@ -83,7 +83,7 @@ class SimpleQueryFactory
     {
         return join("\n\t", [
             join(' ', [$join['type'], $join['table'], 'ON']),
-            $this->buildCondition($join['where']),
+            self::buildConditions($join['where']),
         ]);
     }
 
@@ -163,7 +163,7 @@ class SimpleQueryFactory
         };
     }
 
-    private function buildCondition(array $conditions, string $glue = 'AND'): string
+    public static function buildConditions(array $conditions, string $glue = 'AND'): string
     {
         $where = [];
         foreach ($conditions as $key => $mixed) {

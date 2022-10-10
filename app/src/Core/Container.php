@@ -165,6 +165,7 @@ final class Container
             'route' => $this->route,
         ];
         $assigns = array_merge($assigns, $control->getAssigns());
+        $control->getManager()->disconnect();
         $templateEngine->render(_DIR_APP_CORE . 'resource' . DIRECTORY_SEPARATOR . 'index.' . $suffix, $assigns);
     }
 }

@@ -6,12 +6,15 @@ namespace App\Manager;
 
 use App\DTO\DTO;
 use App\DTO\IEntityTypeDTO;
+use App\Extension\QueryFactory\QueryFactoryExtension;
 use App\Factory\SimpleQueryFactory;
-use \PDO as PDO;
 use App\Helper\Helper;
 use App\Helper\StringHelper;
 use App\Manager\IManager;
+use Aura\Sql\ExtendedPdo;
+use Aura\SqlQuery\QueryInterface;
 use Exception;
+use \PDO as PDO;
 use PDOException;
 use PDOStatement;
 use ReflectionClass;
@@ -32,22 +35,29 @@ class MysqlManager implements IManager
     const FETCH_OBJS = 'objects';
     const FETCH_ASSOCS = 'rows';
     private ?PDOStatement $lastSth;
-    private PDO $pdo;
+    private ExtendedPdo $pdo;
     public static array $reflections = [];
     public static string $driver;
+    public static QueryFactoryExtension $qf;
 
-    public function __construct(PDO $pdo)
+    public function __construct(ExtendedPdo $pdo)
     {
         $this->setPdo($pdo);
     }
+
+    public function disconnect(): void
+    {
+        $this->pdo->disconnect();
+    }
     public static function connect(array $params): self
     {
-        $pdo = new PDO($params['dsn'], $params['user'], $params['pass'], $params['options'] ?? null);
+        $pdo = new ExtendedPdo($params['dsn'], $params['user'], $params['pass'], $params['options'] ?? null);
         self::$driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        self::$qf = new QueryFactoryExtension(self::$driver);
         return new self($pdo);
     }
 
-    public function getPdo(): PDO
+    public function getPdo(): ExtendedPdo
     {
         return $this->pdo;
     }
@@ -55,30 +65,33 @@ class MysqlManager implements IManager
     /**
      * @todo use fluent (cycle/database, aura/sql, illuminate/database, dibi/dibi etc), for those base queries
      */
-    public static function prepareQuery(array $array, string $statement = 'SELECT'): string
+    public static function prepareQuery(array $params, string $statement = 'SELECT'): QueryInterface
     {
-        return SimpleQueryFactory::createQuery($statement, $array, static::$driver);
+        return static::$qf->buildFromParams($statement, $params);
     }
 
     /**
      * @todo single insert has to return last_inserted_id
      * @todo make it protected, instead this metod has to be new metod save, delete, read, readAll
      */
-    public function query(string $sql, ?string $fetchType = null): mixed
+    public function query(QueryInterface|string $sql, ?string $fetchType = null): mixed
     {
         $sth = $result = false;
-        $pdo = $this->getPdo();
-        if ($pdo == false) {
+        $bindValues = [];
+        if ($this->getPdo() == false) {
             throw new Exception("There is no PDO connection");
         } elseif (is_string($sql) && !empty($sql)) {
             $statement = $sql;
+        } elseif ($sql instanceof QueryInterface) {
+            $statement = $sql->getStatement();
+            $bindValues = $sql->getBindValues();
         } else {
             throw new Exception("Query has to be a string");
         }
 
         try {
-            $sth = $pdo->prepare($statement);
-            $sth->execute();
+            $sth = $this->getPdo()->prepare($statement);
+            $sth->execute($bindValues);
             if ($sth->errorCode() != self::QUERY_SUCCESS) {
                 throw new Exception(print_r($sth->errorInfo(), true));
             }
@@ -95,43 +108,35 @@ class MysqlManager implements IManager
             switch ($fetch) {
                 case PDO::FETCH_KEY_PAIR:
                 case self::FETCH_KEY_PAIR:
-                    $type = PDO::FETCH_KEY_PAIR;
-                    $result = $sth->fetch($type);
+                    $result = $sth->fetch(PDO::FETCH_KEY_PAIR);
                     break;
                 case PDO::FETCH_KEY_PAIR:
                 case self::FETCH_KEY_PAIRS:
-                    $type = PDO::FETCH_KEY_PAIR;
-                    $result = $sth->fetchAll($type);
+                    $result = $sth->fetchAll(PDO::FETCH_KEY_PAIR);
                     break;
                 case PDO::FETCH_COLUMN:
                 case self::FETCH_COLUMN:
-                    $type = PDO::FETCH_COLUMN;
-                    $result = $sth->fetch($type);
+                    $result = $sth->fetch(PDO::FETCH_COLUMN);
                     break;
                 case PDO::FETCH_COLUMN:
                 case self::FETCH_COLUMNS:
-                    $type = PDO::FETCH_COLUMN;
-                    $result = $sth->fetchAll($type);
+                    $result = $sth->fetchAll(PDO::FETCH_COLUMN);
                     break;
                 case PDO::FETCH_OBJ:
                 case self::FETCH_OBJS:
-                    $type = PDO::FETCH_OBJ;
-                    $result = $sth->fetchAll($type);
+                    $result = $sth->fetchAll(PDO::FETCH_OBJ);
                     break;
                 case PDO::FETCH_OBJ:
                 case self::FETCH_OBJ:
-                    $type = PDO::FETCH_OBJ;
-                    $result = $sth->fetch($type);
+                    $result = $sth->fetch(PDO::FETCH_OBJ);
                     break;
                 case PDO::FETCH_ASSOC:
                 case self::FETCH_ASSOCS:
-                    $type = PDO::FETCH_ASSOC;
-                    $result = $sth->fetchAll($type);
+                    $result = $sth->fetchAll(PDO::FETCH_ASSOC);
                     break;
                 case PDO::FETCH_ASSOC:
                 case self::FETCH_ASSOC:
-                    $type = PDO::FETCH_ASSOC;
-                    $result = $sth->fetch($type);
+                    $result = $sth->fetch(PDO::FETCH_ASSOC);
                     break;
                 default:
                     break;
@@ -146,7 +151,7 @@ class MysqlManager implements IManager
         return $this->lastSth;
     }
 
-    public function setPdo(PDO $pdo): self
+    public function setPdo(ExtendedPdo $pdo): self
     {
         $this->pdo = $pdo;
 
@@ -214,7 +219,7 @@ class MysqlManager implements IManager
         return self::$reflections[$className];
     }
 
-    public static function prepareQueryFromDto(string $className, string $statement, array $params = []): string
+    public static function prepareQueryFromDto(string $className, string $statement, array $params = []): QueryInterface
     {
         $aSql = self::prepareSelectFromDto($className);
         $aSql = array_merge($aSql, $params);
