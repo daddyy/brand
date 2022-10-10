@@ -55,8 +55,8 @@ abstract class EntityControl implements IControl
 
     public function createFormDelete($entityDTO): Form
     {
-        $form = FormFactory::createForm('delete', $entityDTO);
-        $form->addSubmit('save', 'delete');
+        $form = FormFactory::createForm('softDelete', $entityDTO);
+        $form->addSubmit('save', 'softDelete');
         return $form;
     }
 
@@ -67,7 +67,7 @@ abstract class EntityControl implements IControl
             if ($entityDTO->fill($values, $this->getDomain())->validate()) {
                 $result = match ($form->getComponent('save')->value) {
                     'upsert' => $this->getManager()->upsert($entityDTO, $values),
-                    'delete' => $this->getManager()->delete($entityDTO, $values),
+                    'softDelete' => $this->getManager()->softDelete($entityDTO),
                     default => throw new Exception("Error Processing Request")
                 };
                 return $result;

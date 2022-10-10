@@ -11,6 +11,7 @@ use App\DTO\LangDTO;
 use App\DTO\RouteDTO;
 use App\Extension\PDO;
 use App\Manager\MysqlManager;
+use Latte\Essential\TranslatorExtension;
 use Exception as DataException;
 
 /**
@@ -146,6 +147,10 @@ final class Container
     {
         $latte = new \Latte\Engine();
         $latte->setTempDirectory(_DIR_CACHE . 'latte');
+        $translator = function (string $original): string {
+            return $original;
+        };
+        $latte->addExtension(new TranslatorExtension($translator));
         return $latte;
     }
 

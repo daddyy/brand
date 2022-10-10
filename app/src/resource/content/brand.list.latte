@@ -1,13 +1,13 @@
 <table class="striped highlight">
     <thead>
         <tr>
-            <th><a class="btn blue" href="{$listing->getUriByOrderColumn('brand_id')}">$.brand_id</a></th>
-            <th><a class="btn blue" href="{$listing->getUriByOrderColumn('create_date')}">$.create_date</a></th>
-            <th>$.content.getId()</th>
-            <th>$.content.title</th>
-            <th>$.route.getId()</th>
-            <th>$.route.path</th>
-            <th>actions</th>
+            <th><a class="btn blue" href="{$listing->getUriByOrderColumn('brand_id')}">{_'$.brand_id'}</a></th>
+            <th><a class="btn blue" href="{$listing->getUriByOrderColumn('create_date')}">{_'$.create_date'}</a></th>
+            <th>{_'$.content.getId()'}</th>
+            <th>{_'$.content.title'}</th>
+            <th>{_'$.route.getId()'}</th>
+            <th>{_'$.route.path'}</th>
+            <th>{_'actions'}</th>
         </tr>
     </thead>
     <tbody>
@@ -19,13 +19,7 @@
             <td>{$item->getRoute()->getId()}</td>
             <td>{$item->getRoute()->path}</td>
             <td>
-                {var $updateForm=$item->getForm('upsert')}
-                <a class="waves-effect waves-light btn modal-trigger" href="#modal-{$updateForm->getName()}">$.brand_id</a>
-                <div class="modal" id="modal-{$updateForm->getName()}">
-                    {var $tmp = $updateForm->getComponent('save')->setAttribute('class', 'waves-effect waves-light btn')}
-                    <div class="modal-content">{$updateForm->render()}</div>
-                    <div class="modal-footer"></div>
-                </div>
+                {include "brand/brand.form.upsert.latte" (expand)['item'=>$item]}
                 {var $deleteForm=$item->getForm('delete')}
                 {var $tmp = $deleteForm->getComponent('save')->setAttribute('class', 'waves-effect waves-light btn red')}
                 {$deleteForm->render()}

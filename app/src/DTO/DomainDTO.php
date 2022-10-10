@@ -6,9 +6,10 @@ namespace App\DTO;
 
 use Exception;
 
-class DomainDTO extends DTO
+class DomainDTO extends EntityDTO
 {
-    private RouteDTO $route;
+    private string $entity_type = 'domain';
+    protected RouteDTO $route;
     protected LangDTO $lang;
     public int $domain_id;
     public int $lang_id;

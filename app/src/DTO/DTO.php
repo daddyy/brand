@@ -118,21 +118,18 @@ abstract class DTO implements IDTO
         return isset($this->{$propertyId}) ? $this->{$propertyId} : null;
     }
 
-    public static function getTableName(): ?string
+    public static function getTableName(): string
     {
-        if (static::getTableMainIdentifier()) {
-            return static::getEntityType();
-        }
-        return null;
+        return static::getEntityType();
     }
 
-    public static function getTableMainIdentifier(): ?string
+    public static function getTableMainIdentifier(): string
     {
         $property = static::getEntityType() . '_id';
-        if (property_exists(static::class, $property)) {
-            return $property;
+        if (!property_exists(static::class, $property)) {
+            throw new Exception('Main identifier for table doesnot exists!');
         }
-        return null;
+        return $property;
     }
 
     public static function getTableUniqueIdentifiers(): array

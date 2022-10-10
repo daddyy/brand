@@ -17,7 +17,7 @@ class FormFactory
         $form->addHidden('_' . $entityDTO::getTableName() . '__' . $entityDTO::getTableMainIdentifier(), $entityDTO->getId());
 
         return match ($actionType) {
-            'delete' => self::deleteForm($form, $entityDTO),
+            'softDelete' => self::softDeleteForm($form, $entityDTO),
             'upsert' => self::upsertForm($form, $entityDTO),
             default => throw new Exception("Requested type of form was not found")
         };
@@ -38,6 +38,11 @@ class FormFactory
     }
 
     private static function deleteForm(Form $form, EntityDTO $entityDTO): Form
+    {
+        return $form;
+    }
+
+    private static function softDeleteForm(Form $form, EntityDTO $entityDTO): Form
     {
         return $form;
     }

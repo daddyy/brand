@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Manager;
 
 use App\DTO\DTO;
+use App\DTO\IEntityDTO;
 use App\DTO\IEntityTypeDTO;
 use App\Extension\QueryFactory\QueryFactoryExtension;
 use App\Factory\SimpleQueryFactory;
@@ -12,6 +13,7 @@ use App\Helper\Helper;
 use App\Helper\StringHelper;
 use App\Manager\IManager;
 use Aura\Sql\ExtendedPdo;
+use Aura\Sql\Profiler\Profiler;
 use Aura\SqlQuery\QueryInterface;
 use Exception;
 use \PDO as PDO;
@@ -34,7 +36,6 @@ class MysqlManager implements IManager
     const FETCH_ASSOC = 'row';
     const FETCH_OBJS = 'objects';
     const FETCH_ASSOCS = 'rows';
-    private ?PDOStatement $lastSth;
     private ExtendedPdo $pdo;
     public static array $reflections = [];
     public static string $driver;
@@ -74,10 +75,8 @@ class MysqlManager implements IManager
      * @todo single insert has to return last_inserted_id
      * @todo make it protected, instead this metod has to be new metod save, delete, read, readAll
      */
-    public function query(QueryInterface|string $sql, ?string $fetchType = null): mixed
+    public function query(QueryInterface|string $sql, ?string $fetchType = null, array $bindValues = []): mixed
     {
-        $sth = $result = false;
-        $bindValues = [];
         if ($this->getPdo() == false) {
             throw new Exception("There is no PDO connection");
         } elseif (is_string($sql) && !empty($sql)) {
@@ -89,66 +88,48 @@ class MysqlManager implements IManager
             throw new Exception("Query has to be a string");
         }
 
-        try {
-            $sth = $this->getPdo()->prepare($statement);
-            $sth->execute($bindValues);
-            if ($sth->errorCode() != self::QUERY_SUCCESS) {
-                throw new Exception(print_r($sth->errorInfo(), true));
-            }
-            $result = $sth->rowCount();
-        } catch (PDOException $e) {
-            $result = false;
-            $fetch = false;
-            throw new PDOException($e->getMessage());
+        $result = false;
+        $fetch = is_bool($fetchType) && $fetchType ? null : $fetchType;
+        switch ($fetch) {
+            case PDO::FETCH_KEY_PAIR:
+            case self::FETCH_KEY_PAIR:
+                $result = $this->getPdo()->fetchOne($statement, $bindValues);
+                break;
+            case self::FETCH_KEY_PAIRS:
+                $result = $this->getPdo()->fetchPairs($statement, $bindValues);
+                break;
+            case PDO::FETCH_COLUMN:
+            case self::FETCH_COLUMN:
+                $result = $this->getPdo()->fetchValue($statement, $bindValues);
+                break;
+            case self::FETCH_COLUMNS:
+                $result = $this->getPdo()->fetchValues($statement, $bindValues);
+                break;
+            case PDO::FETCH_OBJ:
+            case self::FETCH_OBJ:
+                $result = $this->getPdo()->fetchObject($statement, $bindValues);
+                break;
+            case self::FETCH_OBJS:
+                $result = $this->getPdo()->fetchObjects($statement, $bindValues);
+                break;
+            case PDO::FETCH_ASSOC:
+            case self::FETCH_ASSOC:
+                $result = $this->getPdo()->fetchOne($statement, $bindValues);
+                break;
+            case self::FETCH_ASSOCS:
+                $result = $this->getPdo()->fetchAll($statement, $bindValues);
+                break;
+            default:
+                $sth = $this->getPdo()->prepare($statement);
+                $sth->execute($bindValues);
+                break;
         }
-
-        if ($fetchType) {
-            $result = false;
-            $fetch = is_bool($fetchType) && $fetchType ? null : $fetchType;
-            switch ($fetch) {
-                case PDO::FETCH_KEY_PAIR:
-                case self::FETCH_KEY_PAIR:
-                    $result = $sth->fetch(PDO::FETCH_KEY_PAIR);
-                    break;
-                case PDO::FETCH_KEY_PAIR:
-                case self::FETCH_KEY_PAIRS:
-                    $result = $sth->fetchAll(PDO::FETCH_KEY_PAIR);
-                    break;
-                case PDO::FETCH_COLUMN:
-                case self::FETCH_COLUMN:
-                    $result = $sth->fetch(PDO::FETCH_COLUMN);
-                    break;
-                case PDO::FETCH_COLUMN:
-                case self::FETCH_COLUMNS:
-                    $result = $sth->fetchAll(PDO::FETCH_COLUMN);
-                    break;
-                case PDO::FETCH_OBJ:
-                case self::FETCH_OBJS:
-                    $result = $sth->fetchAll(PDO::FETCH_OBJ);
-                    break;
-                case PDO::FETCH_OBJ:
-                case self::FETCH_OBJ:
-                    $result = $sth->fetch(PDO::FETCH_OBJ);
-                    break;
-                case PDO::FETCH_ASSOC:
-                case self::FETCH_ASSOCS:
-                    $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-                    break;
-                case PDO::FETCH_ASSOC:
-                case self::FETCH_ASSOC:
-                    $result = $sth->fetch(PDO::FETCH_ASSOC);
-                    break;
-                default:
-                    break;
-            }
-        }
-        $this->lastSth = $sth;
         return $result;
     }
 
-    public function getLastSth(): ?PDOStatement
+    public function getProfiler(): Profiler
     {
-        return $this->lastSth;
+        return $this->getPdo()->getProfiler();
     }
 
     public function setPdo(ExtendedPdo $pdo): self
@@ -194,21 +175,25 @@ class MysqlManager implements IManager
         return $result;
     }
 
-    /**
-     * @todo create user account with rule delete and then we can delete the rows, until that just sign as soft delete
-     * @return boolean
-     */
-    public function delete(DTO $entityDTO): array
+    public function softDelete(IEntityDTO $entityDTO): array
     {
         $sql = self::prepareQuery(
             [
                 'table' => $entityDTO::getTableName(),
-                'cols' => ['deleted' => 1],
                 'where' => [[$entityDTO::getTableMainIdentifier() . ' = %s', [$entityDTO->getId()]]]
             ],
-            'update'
+            'softdelete'
         );
         return [$entityDTO::getTableName() => $this->query($sql)];
+    }
+
+    /**
+     * @todo create user account with rule delete and then we can delete the rows, until that just sign as soft delete
+     */
+    public function delete(DTO $entityDTO): array
+    {
+        trigger_error('Not ready');
+        return [];
     }
 
     public static function getReflection(string $className): ReflectionClass
@@ -254,7 +239,7 @@ class MysqlManager implements IManager
         foreach ($protected as $property) {
             if ($property->name) {
                 $subClassName = self::getClosestClassNameByProperty($property->name, $className);
-                $temp = self::prepareSelectFromDto($subClassName);
+                $temp = $subClassName ? self::prepareSelectFromDto($subClassName) : false;
                 if ($temp) {
                     $aSql['cols'] = array_merge($aSql['cols'], $temp['cols']);
                     $join = [

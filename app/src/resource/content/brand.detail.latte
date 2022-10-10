@@ -4,10 +4,10 @@
 <table class="striped highlight">
     <thead>
         <tr>
-            <th>$.brand_id</th>
-            <th>$.create_date / $.modify_date</th>
-            <th>$.content.title</th>
-            <th>$.content.url</th>
+            <th>{_'$.brand_id'}</th>
+            <th>{_'$.create_date / $.modify_date'}</th>
+            <th>{_'$.content.title'}</th>
+            <th>{_'$.content.url'}</th>
         </tr>
     </thead>
     <tbody>
@@ -19,7 +19,9 @@
         </tr>
         <tr>
             <td colspan="4">
-                {$detail->getForm('upsert')->render()}
+                {include "brand/brand.form.upsert.latte" (expand)['item'=$item]}
+                {var $deleteForm=$item->getForm('delete')}
+                {var $tmp = $deleteForm->getComponent('save')->setAttribute('class', 'waves-effect waves-light btn red')}
             </td>
         </tr>
     </tbody>

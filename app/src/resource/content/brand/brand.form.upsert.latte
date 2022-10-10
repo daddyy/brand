@@ -1,0 +1,10 @@
+{var $updateForm=$item->getForm('upsert')}
+<a class="waves-effect waves-light btn modal-trigger" href="#modal-{$updateForm->getName()}">$.brand_id</a>
+<div class="modal" id="modal-{$updateForm->getName()}">
+    {var $tmp = $updateForm->getComponent('save')->setAttribute('class', 'waves-effect waves-light btn')}
+    <div class="modal-content">
+        {$updateForm->render()}
+    </div>
+    <div class="modal-footer">
+    </div>
+</div>

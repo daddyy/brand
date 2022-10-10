@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\DTO;
 
 use ArrayAccess;
+use Aura\Sql\Exception;
 use Nette\Forms\Form;
 use App\Helper\Helper;
 use App\Helper\ArrayHelper;
 use DateTime;
 
-abstract class EntityDTO extends DTO
+abstract class EntityDTO extends DTO implements IEntityDTO
 {
     /**
      * @var Form[]

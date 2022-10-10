@@ -12,9 +12,10 @@ use App\DTO\RouteDTO;
 
 class BrandDTO extends EntityDTO
 {
+    protected RouteDTO $route;
     public int $brand_id;
 
-    public static function getTableMainIdentifier(): ?string
+    public static function getTableMainIdentifier(): string
     {
         return BrandControl::getTableMainIdentifier();
     }
