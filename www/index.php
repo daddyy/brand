@@ -13,4 +13,4 @@ define('_DIR_CONFIG', realpath(_DIR_APP . 'config') . DIRECTORY_SEPARATOR);
 putenv('TMPDIR=' . _DIR_TMP);
 // phpcs:enable
 
-require_once(_DIR_APP_CORE . 'run.php');
+require_once(_DIR_APP . 'run.php');
