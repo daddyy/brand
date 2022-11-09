@@ -3,6 +3,6 @@ vendor/
 cache/
 logs/
 task.md
-app/config/*.yml
+src/config/*.yml
 www/data/*
 transport/
