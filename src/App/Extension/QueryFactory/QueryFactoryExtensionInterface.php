@@ -9,7 +9,10 @@ use Aura\SqlQuery\Common\UpdateInterface;
 
 interface QueryFactoryExtensionInterface
 {
-    public function buildFromParams(string $statement, array $params): DeleteInterface|InsertInterface|UpdateInterface|SelectInterface;
+    public function buildFromParams(
+        string $statement,
+        array $params
+    ): DeleteInterface|InsertInterface|UpdateInterface|SelectInterface;
     public function buildSoftDeleteFromParams($params): UpdateInterface;
     public function buildUpdateFromParams($params): UpdateInterface;
     public function buildSelectFromParams($params): SelectInterface;

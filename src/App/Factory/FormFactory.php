@@ -14,7 +14,10 @@ class FormFactory extends Form
     {
         $form = new self($actionType . '_' . $entityDTO::getTableName() . '_' .  $entityDTO->getId());
         $form->setAction($entityDTO->getRoute()->getAbsPath());
-        $form->addHidden('_' . $entityDTO::getTableName() . '__' . $entityDTO::getTableMainIdentifier(), $entityDTO->getId());
+        $form->addHidden(
+            '_' . $entityDTO::getTableName() . '__' . $entityDTO::getTableMainIdentifier(),
+            $entityDTO->getId()
+        );
 
         return match ($actionType) {
             'softDelete' => self::softDeleteForm($form, $entityDTO),

@@ -15,8 +15,10 @@ use Exception;
 
 class QueryFactoryExtension extends QueryFactory implements QueryFactoryExtensionInterface
 {
-    public function buildFromParams(string $statement, array $params): DeleteInterface|InsertInterface|UpdateInterface|SelectInterface
-    {
+    public function buildFromParams(
+        string $statement,
+        array $params
+    ): DeleteInterface|InsertInterface|UpdateInterface|SelectInterface {
         return match (strtolower($statement)) {
             'select' => $this->buildSelectFromParams($params),
             'insert' => $this->buildInsertFromParams($params),
@@ -68,7 +70,11 @@ class QueryFactoryExtension extends QueryFactory implements QueryFactoryExtensio
         }
         if (isset($params['joins'])) {
             foreach ($params['joins'] ?? [] as $join) {
-                $queryObject->join($join['type'] ?? 'inner', $join['table'], SimpleQueryFactory::buildConditions($join['where']));
+                $queryObject->join(
+                    $join['type'] ?? 'inner',
+                    $join['table'],
+                    SimpleQueryFactory::buildConditions($join['where'])
+                );
             }
         }
         $this->whereFromParams($queryObject, $params['where'] ?? []);
@@ -92,7 +98,11 @@ class QueryFactoryExtension extends QueryFactory implements QueryFactoryExtensio
     public function joinsFromParams(SelectInterface $queryObject, array $joins): SelectInterface
     {
         foreach ($joins ?? [] as $join) {
-            $queryObject->join($join['type'] ?? 'inner', $join['table'], SimpleQueryFactory::buildConditions($join['where']));
+            $queryObject->join(
+                $join['type'] ?? 'inner',
+                $join['table'],
+                SimpleQueryFactory::buildConditions($join['where'])
+            );
         }
         return $queryObject;
     }

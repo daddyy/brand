@@ -16,5 +16,9 @@ interface IManager
     public function softDelete(IEntityDTO $entityDTO): array;
     public function upsert(DTO $entityDTO): array;
     public static function prepareQuery(array $array, string $statement = 'SELECT'): QueryInterface;
-    public static function prepareQueryFromDto(string $className, string $statement, array $params = []): QueryInterface;
+    public static function prepareQueryFromDto(
+        string $className,
+        string $statement,
+        array $params = []
+    ): QueryInterface;
 }

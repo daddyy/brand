@@ -1,5 +1,6 @@
 <?php
 
+// phpcs:disable
 /**
  * simple script for generate actual db structure
  * @todo use the docblock and read the @db_props
@@ -135,3 +136,4 @@ echo "\n\n============================ start SQL ========================\n";
 echo ">>> db structure sql file was saved as: " . $tmpFile;
 echo "\n============================  end SQL  ========================\n";
 die();
+// phpcs:enable

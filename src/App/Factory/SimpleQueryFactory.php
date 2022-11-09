@@ -10,7 +10,7 @@ use Exception;
  */
 class SimpleQueryFactory
 {
-    private static $_instance;
+    private static $instance;
 
     public function __construct(private string $driver)
     {
@@ -18,10 +18,10 @@ class SimpleQueryFactory
 
     public static function getInstance(string $driver): self
     {
-        if (!isset(static::$_instance[$driver])) {
-            self::$_instance[$driver] = new self($driver);
+        if (!isset(static::$instance[$driver])) {
+            self::$instance[$driver] = new self($driver);
         }
-        return self::$_instance[$driver];
+        return self::$instance[$driver];
     }
 
     public static function createQuery(string $typeQuery, array $array, string $driver): string
@@ -116,7 +116,7 @@ class SimpleQueryFactory
         return [
             'insert_into' => $this->buildFrom('select', $array['table']),
             '_values' => $this->buildCols('insert', $array['cols']),
-        ];;
+        ];
     }
 
     private function buildSelect(array $array): array

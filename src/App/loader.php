@@ -30,37 +30,3 @@ foreach (['definition', 'config'] as $type) {
         }
     }
 }
-
-/**
- * load the classes from core and libreries
- * @todo fix the directories structure and use composer
- */
-function autoload($className)
-{
-    $result               = false;
-    $filename             = false;
-    $namespaceSeparator   = '\\';
-    $classExtensionSuffix = '.php';
-    $paths                = array(
-        'core' => _DIR_APP_CORE
-    );
-    $temp = explode('\\', $className, 2);
-    $target = str_replace($namespaceSeparator, DIRECTORY_SEPARATOR, end($temp)) . $classExtensionSuffix;
-    foreach ($paths as $path) {
-        $filename = $path . DIRECTORY_SEPARATOR . $target;
-        if (file_exists($filename)) {
-            $result = $filename;
-            break;
-        }
-    }
-    if ($result) {
-        require_once $result;
-    }
-}
-
-
-if (!function_exists('spl_autoload_register')) {
-    throw new \Exception('spl_autoload does not exist in this PHP installation');
-}
-
-spl_autoload_register("autoload");
