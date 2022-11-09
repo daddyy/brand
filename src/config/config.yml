@@ -1,3 +1,0 @@
-app:
-  host: daddyy.local
-  database: "sqlsrv://daddyy:asdf@localhost/test"
