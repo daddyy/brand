@@ -11,13 +11,15 @@
 2. `$ chmod 755 .`
 3. `$ chmod 775 ./cache ./logs`
 4. create / copy config file
-    - production: `$ cp ./app/config/config.yml.tmp ./app/config/config.yml`
-    - development: `$ cp ./app/config/config.yml.tmp ./app/config/devel.config.yml`
-    - local: `$ cp ./app/config/config.yml.tmp ./app/config/local.config.yml`
+    - production: `$ cp ./src/config/config.yml.tmp ./src/config/config.yml`
+    - development: `$ cp ./src/config/config.yml.tmp ./src/config/devel.config.yml`
+    - local: `$ cp ./src/config/config.yml.tmp ./src/config/local.config.yml`
 5. `$ composer update`
 ### first run
-- `app/src/install/check.php` => put (uncomment) it the require to the `run.php` after the init object config
-- fill the DB with example data
-### SQL dump
-- `app/src/install/seed.php` => put (uncomment) it the require to the `run.php` after the init object config
+```bash
+    php ./www/index.php -fcheck
+```
+```bash
+    php ./www/index.php -fdb
+```
 - fill the DB with example data

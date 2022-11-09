@@ -2,12 +2,12 @@
 
 namespace App\DTO\Lang;
 
-use App\DTO\ContentDTO;
-use App\DTO\IContentDTO;
+use App\DTO\ContentDTO as ContentDTO;
+use App\DTO\IContentDTO as IContentDTO;
 
 class LangVariableDTO extends ContentDTO implements IContentDTO
 {
-    public $object_type = 'lang';
+    public string $object_type = 'lang';
     public static function getTableName(): string
     {
         return parent::getTableName();

@@ -2,8 +2,10 @@
 
 use Symfony\Component\Yaml\Yaml;
 
-require_once _DIR_VENDOR . 'autoload.php';
+require_once  __DIR__ . DIRECTORY_SEPARATOR . 'constants.php';
 require_once  __DIR__ . DIRECTORY_SEPARATOR . 'missing.php';
+
+require_once _DIR_VENDOR . 'autoload.php';
 
 /**
  * mandatory order production, devel, local

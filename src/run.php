@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'loader.php';
 /**
  * check the configuration
  */
@@ -12,7 +13,6 @@ if ($option == 'check') {
 /**
  * load config and composer aitoload, setup spl for app autoload
  */
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'loader.php';
 
 /**
  * show actual SQL dump

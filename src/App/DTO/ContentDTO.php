@@ -12,7 +12,7 @@ class ContentDTO extends DTO implements IEntityTypeDTO, IContentDTO
     public int $content_id;
     public int $lang_id;
     public int $object_id;
-    public string $object_type;
+    public string $object_type = '';
     public string $title = '';
     public string $description = '';
     public string $text = '';
